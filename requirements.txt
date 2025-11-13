@@ -7,4 +7,5 @@ flask>=2.3.0
 qiskit>=1.0.0
 python-dotenv>=1.0.0
 dill>=0.3.7
+gunicorn>=20.0.0
 -e .
