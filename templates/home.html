@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Error Analysis - Prediction</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Your existing CSS styles remain the same */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --accent: #f093fb;
+            --dark: #2d3748;
+            --light: #f8f9fa;
+            --success: #48bb78;
+            --warning: #ed8936;
+            --danger: #f56565;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            padding: 40px;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: 3.5rem;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 1.2rem;
+        }
+        
+        .form-section {
+            background: var(--light);
+            padding: 40px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        label {
+            color: var(--dark);
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 1em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .label-info {
+            color: #666;
+            font-size: 0.85em;
+            font-weight: normal;
+            margin-top: 2px;
+        }
+        
+        input, select {
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .submit-btn {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 18px 50px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 30px;
+            width: 100%;
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.6);
+        }
+        
+        .results-section {
+            margin-top: 40px;
+            padding: 40px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 20px;
+            animation: slideInUp 0.6s ease;
+        }
+        
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .result-header {
+            font-size: 2.5em;
+            color: var(--primary);
+            margin-bottom: 30px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .result-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid var(--primary);
+            transition: all 0.3s ease;
+        }
+        
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        .result-card h3 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 1.4em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+            align-items: center;
+        }
+        
+        .result-item:last-child {
+            border-bottom: none;
+        }
+        
+        .result-label {
+            font-weight: 600;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .result-value {
+            color: #333;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+        
+        .impact-positive {
+            color: var(--success);
+            font-weight: bold;
+        }
+        
+        .impact-negative {
+            color: var(--danger);
+            font-weight: bold;
+        }
+        
+        .risk-high {
+            color: var(--danger);
+            font-weight: bold;
+            background: rgba(245, 101, 101, 0.1);
+            padding: 5px 15px;
+            border-radius: 20px;
+        }
+        
+        .risk-medium {
+            color: var(--warning);
+            font-weight: bold;
+            background: rgba(237, 137, 54, 0.1);
+            padding: 5px 15px;
+            border-radius: 20px;
+        }
+        
+        .risk-low {
+            color: var(--success);
+            font-weight: bold;
+            background: rgba(72, 187, 120, 0.1);
+            padding: 5px 15px;
+            border-radius: 20px;
+        }
+        
+        .recommendation-box {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid var(--accent);
+        }
+        
+        .error-message {
+            background: #fed7d7;
+            color: #c53030;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 5px solid var(--danger);
+            margin-bottom: 20px;
+            animation: shake 0.5s ease;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        .info-box {
+            background: #bee3f8;
+            color: #2c5282;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border-left: 5px solid #4299e1;
+        }
+        
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 20px;
+            padding: 12px 30px;
+            background: #6c757d;
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        .back-btn:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-atom"></i> Quantum Error Analysis</h1>
+            <p>Advanced AI-powered quantum computing error prediction and business impact analysis</p>
+        </div>
+        
+        <div class="info-box">
+            <strong><i class="fas fa-info-circle"></i> How to use:</strong> Enter your quantum system parameters below. 
+            Our AI will predict error likelihood and calculate the financial impact of your quantum operations.
+        </div>
+        
+        {% if error %}
+        <div class="error-message">
+            <strong><i class="fas fa-exclamation-triangle"></i> Error:</strong> {{ error }}
+        </div>
+        {% endif %}
+        
+        <div class="form-section">
+            <h2 style="color: var(--primary); margin-bottom: 20px;">
+                <i class="fas fa-sliders-h"></i> Input Quantum System Parameters
+            </h2>
+            <form action="{{ url_for('predict_datapoint') }}" method="post">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-bullseye"></i>
+                            Gate Fidelity
+                        </label>
+                        <span class="label-info">Quantum gate operation quality (0.900 - 0.999)</span>
+                        <input type="number" step="0.001" name="gate_fidelity" 
+                               placeholder="e.g., 0.995" required min="0.9" max="0.999" value="0.995">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-clock"></i>
+                            Coherence Time (μs)
+                        </label>
+                        <span class="label-info">Qubit state stability duration (10 - 100)</span>
+                        <input type="number" step="0.01" name="coherence_time" 
+                               placeholder="e.g., 50" required min="10" max="100" value="50">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-thermometer-half"></i>
+                            Temperature (mK)
+                        </label>
+                        <span class="label-info">Operating temperature range (10 - 50)</span>
+                        <input type="number" step="0.01" name="temperature" 
+                               placeholder="e.g., 20" required min="10" max="50" value="20">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-cogs"></i>
+                            Gate Count
+                        </label>
+                        <span class="label-info">Number of quantum gates (10 - 200)</span>
+                        <input type="number" name="gate_count" 
+                               placeholder="e.g., 30" required min="10" max="200" value="30">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-layer-group"></i>
+                            Circuit Depth
+                        </label>
+                        <span class="label-info">Quantum circuit complexity (5 - 50)</span>
+                        <input type="number" name="circuit_depth" 
+                               placeholder="e.g., 12" required min="5" max="50" value="12">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-project-diagram"></i>
+                            Qubit Connectivity
+                        </label>
+                        <span class="label-info">Qubit interconnection quality (0.500 - 1.000)</span>
+                        <input type="number" step="0.001" name="qubit_connectivity" 
+                               placeholder="e.g., 0.85" required min="0.5" max="1.0" value="0.85">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-search"></i>
+                            Readout Fidelity
+                        </label>
+                        <span class="label-info">Qubit measurement accuracy (0.800 - 0.980)</span>
+                        <input type="number" step="0.001" name="readout_fidelity" 
+                               placeholder="e.g., 0.92" required min="0.8" max="0.98" value="0.92">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-wave-square"></i>
+                            Crosstalk Level
+                        </label>
+                        <span class="label-info">Qubit interference level (0.010 - 0.100)</span>
+                        <input type="number" step="0.001" name="crosstalk_level" 
+                               placeholder="e.g., 0.05" required min="0.01" max="0.1" value="0.05">
+                    </div>
+                </div>
+                
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-rocket"></i> Analyze & Predict Quantum Error
+                </button>
+            </form>
+        </div>
+        
+        {% if results %}
+        <div class="results-section">
+            <div class="result-header">
+                <i class="fas fa-chart-bar"></i> Prediction Results
+            </div>
+            
+            <div class="results-grid">
+                <div class="result-card">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Prediction Outcome</h3>
+                    <div class="result-item">
+                        <span class="result-label">Prediction:</span>
+                        <span class="result-value">{{ results.prediction }}</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Error Probability:</span>
+                        <span class="result-value">{{ results.probability }}</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Confidence Level:</span>
+                        <span class="result-value">{{ results.confidence }}</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Risk Level:</span>
+                        <span class="result-value 
+                            {% if results.risk_level == 'High' %}risk-high
+                            {% elif results.risk_level == 'Medium' %}risk-medium
+                            {% else %}risk-low{% endif %}">
+                            {{ results.risk_level }}
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="result-card">
+                    <h3><i class="fas fa-dollar-sign"></i> Business Impact Analysis</h3>
+                    <div class="result-item">
+                        <span class="result-label">Expected Benefit:</span>
+                        <span class="result-value impact-positive">{{ results.expected_benefit }}</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Expected Cost:</span>
+                        <span class="result-value impact-negative">{{ results.expected_cost }}</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Net Impact:</span>
+                        <span class="result-value {% if '-' in results.net_impact %}impact-negative{% else %}impact-positive{% endif %}">
+                            {{ results.net_impact }}
+                        </span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">ROI Potential:</span>
+                        <span class="result-value {% if '-' in results.roi_potential %}impact-negative{% else %}impact-positive{% endif %}">
+                            {{ results.roi_potential }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="recommendation-box">
+                <h3 style="color: var(--accent); margin-bottom: 15px;">
+                    <i class="fas fa-lightbulb"></i> Strategic Recommendation
+                </h3>
+                <p style="color: #555; line-height: 1.6; font-size: 1.1em;">{{ results.recommendation }}</p>
+            </div>
+            
+            <div style="margin-top: 30px; padding: 25px; background: white; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                <h4 style="color: var(--primary); margin-bottom: 15px;">
+                    <i class="fas fa-chart-line"></i> Understanding Your Results:
+                </h4>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                    <div style="padding: 15px; background: rgba(102, 126, 234, 0.05); border-radius: 10px;">
+                        <strong>Net Impact:</strong> Shows expected financial outcome. Positive indicates net benefit, negative indicates net cost.
+                    </div>
+                    <div style="padding: 15px; background: rgba(245, 101, 101, 0.05); border-radius: 10px;">
+                        <strong>High Risk (>70%):</strong> Immediate intervention recommended to prevent catastrophic errors.
+                    </div>
+                    <div style="padding: 15px; background: rgba(237, 137, 54, 0.05); border-radius: 10px;">
+                        <strong>Medium Risk (40-70%):</strong> Monitor closely and implement preventive measures.
+                    </div>
+                    <div style="padding: 15px; background: rgba(72, 187, 120, 0.05); border-radius: 10px;">
+                        <strong>Low Risk (<40%):</strong> System operating within acceptable quantum parameters.
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        <a href="/" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Back to Home
+        </a>
+    </div>
+
+    <script>
+        // Add animations for results
+        document.addEventListener('DOMContentLoaded', function() {
+            const resultsSection = document.querySelector('.results-section');
+            if (resultsSection) {
+                setTimeout(() => {
+                    try {
+                        // Get probability from the displayed text
+                        const probabilityElement = document.querySelector('.result-item:nth-child(2) .result-value');
+                        if (probabilityElement) {
+                            const probabilityText = probabilityElement.textContent;
+                            const confidence = parseFloat(probabilityText.replace('%', '')) / 100;
+                            
+                            // Create confidence meter
+                            const meter = document.createElement('div');
+                            meter.className = 'confidence-meter';
+                            meter.style.marginTop = '10px';
+                            
+                            const fill = document.createElement('div');
+                            fill.className = 'confidence-fill';
+                            fill.style.width = '0%';
+                            fill.style.height = '100%';
+                            fill.style.borderRadius = '10px';
+                            fill.style.background = confidence > 0.7 ? 'var(--danger)' : 
+                                                  confidence > 0.4 ? 'var(--warning)' : 'var(--success)';
+                            fill.style.transition = 'width 1.5s ease-in-out';
+                            
+                            meter.appendChild(fill);
+                            
+                            // Add meter to the confidence item
+                            const confidenceItem = document.querySelector('.result-item:nth-child(2)');
+                            if (confidenceItem) {
+                                confidenceItem.appendChild(meter);
+                                
+                                // Animate the fill
+                                setTimeout(() => {
+                                    fill.style.width = (confidence * 100) + '%';
+                                }, 100);
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Error creating confidence meter:', error);
+                    }
+                }, 500);
+            }
+        });
+    </script>
+</body>
+</html>
