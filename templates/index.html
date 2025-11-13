@@ -3,370 +3,997 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quantum Error Prediction System</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Quantum Error Prediction | Advanced ML Solutions</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
-        :root {
-            --primary: #667eea;
-            --secondary: #764ba2;
-            --accent: #f093fb;
-            --dark: #2d3748;
-            --light: #f8f9fa;
-            --success: #48bb78;
-            --warning: #ed8936;
-            --danger: #f56565;
-        }
-        
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            min-height: 100vh;
-            color: var(--dark);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            color: #1a1a1a;
             overflow-x: hidden;
+            background: #ffffff;
         }
-        
+
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1.2rem 5%;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        nav.scrolled {
+            padding: 0.8rem 5%;
+            box-shadow: 0 2px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #667eea;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
         .hero {
             min-height: 100vh;
             display: flex;
             align-items: center;
-            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
             position: relative;
             overflow: hidden;
+            padding-top: 80px;
         }
-        
+
         .hero::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><circle cx="200" cy="200" r="2" fill="white" opacity="0.1"/><circle cx="600" cy="300" r="1" fill="white" opacity="0.1"/><circle cx="800" cy="150" r="1.5" fill="white" opacity="0.1"/><circle cx="300" cy="600" r="1" fill="white" opacity="0.1"/><circle cx="700" cy="700" r="2" fill="white" opacity="0.1"/></svg>');
-            animation: float 20s infinite linear;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: float 20s linear infinite;
         }
-        
+
         @keyframes float {
-            0% { transform: translateY(0px) rotate(0deg); }
-            100% { transform: translateY(-20px) rotate(360deg); }
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
         }
-        
-        .container {
-            max-width: 1200px;
+
+        .hero-content {
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 5%;
             position: relative;
             z-index: 2;
         }
-        
-        .hero-content {
-            text-align: center;
-            color: white;
-            padding: 60px 0;
-        }
-        
-        .hero-title {
+
+        .hero h1 {
             font-size: 4rem;
-            font-weight: 800;
-            margin-bottom: 1rem;
-            background: linear-gradient(45deg, #fff, var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: glow 2s ease-in-out infinite alternate;
-        }
-        
-        @keyframes glow {
-            from { text-shadow: 0 0 20px rgba(255,255,255,0.5); }
-            to { text-shadow: 0 0 30px rgba(255,255,255,0.8), 0 0 40px rgba(255,255,255,0.6); }
-        }
-        
-        .hero-subtitle {
-            font-size: 1.5rem;
-            margin-bottom: 2rem;
-            opacity: 0.9;
-            font-weight: 300;
-        }
-        
-        .cta-button {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: linear-gradient(45deg, var(--accent), var(--primary));
             color: white;
-            padding: 18px 40px;
-            border: none;
-            border-radius: 50px;
-            font-size: 1.2rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+            font-weight: 800;
+            line-height: 1.2;
+            animation: fadeInUp 1s ease;
+        }
+
+        .hero p {
+            font-size: 1.4rem;
+            color: rgba(255, 255, 255, 0.95);
+            margin-bottom: 2.5rem;
+            max-width: 700px;
+            line-height: 1.6;
+            animation: fadeInUp 1s ease 0.2s backwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: white;
+            color: #667eea;
             text-decoration: none;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            animation: pulse 2s infinite;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            animation: fadeInUp 1s ease 0.4s backwards;
         }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-        
+
         .cta-button:hover {
             transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
         }
-        
-        .features-section {
-            background: var(--light);
-            padding: 100px 0;
+
+        .quantum-visual {
+            position: absolute;
+            right: 5%;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 500px;
+            height: 500px;
         }
-        
-        .section-title {
+
+        .quantum-circle {
+            position: absolute;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+        }
+
+        .quantum-circle:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            top: 100px;
+            left: 100px;
+        }
+
+        .quantum-circle:nth-child(2) {
+            width: 400px;
+            height: 400px;
+            top: 50px;
+            left: 50px;
+        }
+
+        .quantum-circle:nth-child(3) {
+            width: 200px;
+            height: 200px;
+            top: 150px;
+            left: 150px;
+        }
+
+        .quantum-dot {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+            top: 50%;
+            left: 50%;
+            margin-top: -6px;
+            margin-left: -6px;
+        }
+
+        .quantum-circle:nth-child(1) .quantum-dot {
+            animation: rotateDot1 20s linear infinite;
+        }
+
+        .quantum-circle:nth-child(2) .quantum-dot {
+            animation: rotateDot2 15s linear infinite reverse;
+        }
+
+        .quantum-circle:nth-child(3) .quantum-dot {
+            animation: rotateDot3 25s linear infinite;
+        }
+
+        @keyframes rotateDot1 {
+            from { 
+                transform: rotate(0deg) translateX(150px) rotate(0deg);
+            }
+            to { 
+                transform: rotate(360deg) translateX(150px) rotate(-360deg);
+            }
+        }
+
+        @keyframes rotateDot2 {
+            from { 
+                transform: rotate(0deg) translateX(200px) rotate(0deg);
+            }
+            to { 
+                transform: rotate(360deg) translateX(200px) rotate(-360deg);
+            }
+        }
+
+        @keyframes rotateDot3 {
+            from { 
+                transform: rotate(0deg) translateX(100px) rotate(0deg);
+            }
+            to { 
+                transform: rotate(360deg) translateX(100px) rotate(-360deg);
+            }
+        }
+
+        .features {
+            padding: 8rem 5%;
+            background: #f8f9fa;
+        }
+
+        .section-header {
             text-align: center;
+            margin-bottom: 5rem;
+        }
+
+        .section-header h2 {
             font-size: 3rem;
-            margin-bottom: 3rem;
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #1a1a1a;
+            margin-bottom: 1rem;
+            font-weight: 700;
         }
-        
-        .features-grid {
+
+        .section-header p {
+            font-size: 1.2rem;
+            color: #666;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .feature-grid {
+            max-width: 1400px;
+            margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-top: 50px;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
         }
-        
+
         .feature-card {
             background: white;
-            padding: 40px 30px;
+            padding: 3rem;
             border-radius: 20px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
             transition: all 0.3s ease;
-            border: 1px solid rgba(255,255,255,0.2);
             position: relative;
             overflow: hidden;
         }
-        
+
         .feature-card::before {
             content: '';
             position: absolute;
             top: 0;
-            left: -100%;
+            left: 0;
             width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-            transition: left 0.5s;
+            height: 5px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
         }
-        
-        .feature-card:hover::before {
-            left: 100%;
-        }
-        
+
         .feature-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
         }
-        
+
+        .feature-card:hover::before {
+            transform: scaleX(1);
+        }
+
         .feature-icon {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            margin-bottom: 1.5rem;
         }
-        
+
         .feature-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-            color: var(--dark);
+            font-size: 1.6rem;
+            margin-bottom: 1rem;
+            color: #1a1a1a;
         }
-        
+
         .feature-card p {
             color: #666;
-            line-height: 1.6;
+            line-height: 1.7;
+            font-size: 1.05rem;
         }
-        
-        .stats-section {
-            background: linear-gradient(135deg, var(--dark) 0%, #4a5568 100%);
-            color: white;
-            padding: 80px 0;
-            text-align: center;
+
+        .info-section {
+            padding: 8rem 5%;
+            max-width: 1400px;
+            margin: 0 auto;
         }
-        
-        .stats-grid {
+
+        .error-prediction-section {
+            padding: 8rem 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+            background: #f8f9fa;
+        }
+
+        .applications {
+            padding: 8rem 5%;
+            background: white;
+        }
+
+        .app-grid {
+            max-width: 1400px;
+            margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 40px;
-            margin-top: 50px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2.5rem;
         }
-        
-        .stat-item {
-            padding: 30px;
+
+        .app-card {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+            padding: 2.5rem;
+            border-radius: 15px;
+            border: 2px solid rgba(102, 126, 234, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
-        
-        .stat-number {
+
+        .app-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 0;
+        }
+
+        .app-card:hover {
+            transform: translateY(-8px);
+            border-color: #667eea;
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.2);
+        }
+
+        .app-card:hover::before {
+            opacity: 0.05;
+        }
+
+        .app-card > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .app-icon {
             font-size: 3rem;
-            font-weight: 800;
-            margin-bottom: 10px;
-            background: linear-gradient(45deg, var(--accent), var(--primary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            margin-bottom: 1.5rem;
+            display: inline-block;
         }
-        
-        .footer {
-            background: var(--dark);
+
+        .app-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: #1a1a1a;
+            font-weight: 600;
+        }
+
+        .app-card p {
+            color: #666;
+            line-height: 1.7;
+            font-size: 1rem;
+        }
+
+        .info-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5rem;
+            align-items: center;
+            margin-bottom: 6rem;
+        }
+
+        .info-content:nth-child(even) {
+            direction: rtl;
+        }
+
+        .info-content:nth-child(even) > * {
+            direction: ltr;
+        }
+
+        .info-text h3 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: #1a1a1a;
+            font-weight: 700;
+        }
+
+        .info-text p {
+            color: #666;
+            line-height: 1.8;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .info-image {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .info-image::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 30px 30px;
+            animation: float 15s linear infinite;
+        }
+
+        .stats {
+            padding: 6rem 5%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .stats-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 4rem;
+            text-align: center;
+        }
+
+        .stat-item h4 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-item p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        footer {
+            padding: 3rem 5%;
+            background: #1a1a1a;
             color: white;
             text-align: center;
-            padding: 40px 0;
         }
-        
+
+        footer p {
+            opacity: 0.8;
+        }
+
         @media (max-width: 768px) {
-            .hero-title {
+            .hero h1 {
                 font-size: 2.5rem;
             }
-            
-            .hero-subtitle {
-                font-size: 1.2rem;
+
+            .hero p {
+                font-size: 1.1rem;
             }
-            
-            .section-title {
-                font-size: 2rem;
+
+            .quantum-visual {
+                display: none;
+            }
+
+            .info-content {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-links {
+                gap: 1.5rem;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="container">
-            <div class="hero-content">
-                <h1 class="hero-title">
-                    <i class="fas fa-atom"></i>
-                    Quantum Error Prediction
-                </h1>
-                <p class="hero-subtitle">
-                    AI-Powered Quantum Computing Error Detection & Prevention System
-                </p>
-                <a href="/predictdata" class="cta-button">
-                    Start Analysis <i class="fas fa-arrow-right"></i>
-                </a>
+    <nav id="navbar">
+        <div class="nav-content">
+            <div class="logo">QuantumPredict</div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1>Quantum Computing<br>Error Prediction</h1>
+            <p>Harness the power of machine learning to predict and mitigate quantum computing errors. Building the future of reliable quantum systems.</p>
+            <a href="/predictdata" class="cta-button">Predict Quantum Errors</a>
+        </div>
+        <div class="quantum-visual">
+            <div class="quantum-circle">
+                <div class="quantum-dot"></div>
+            </div>
+            <div class="quantum-circle">
+                <div class="quantum-dot"></div>
+            </div>
+            <div class="quantum-circle">
+                <div class="quantum-dot"></div>
             </div>
         </div>
     </section>
 
-    <!-- Features Section -->
-    <section class="features-section">
-        <div class="container">
-            <h2 class="section-title">Why Choose Our System?</h2>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-brain"></i>
-                    </div>
-                    <h3>Advanced AI Algorithms</h3>
-                    <p>State-of-the-art machine learning models trained on quantum computing data for unparalleled accuracy in error prediction.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <h3>Real-Time Analytics</h3>
-                    <p>Instant predictions with comprehensive business impact analysis and financial implications.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-shield-alt"></i>
-                    </div>
-                    <h3>Risk Mitigation</h3>
-                    <p>Proactive error detection to prevent costly quantum computing failures and system downtime.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-cogs"></i>
-                    </div>
-                    <h3>Quantum Parameters</h3>
-                    <p>Comprehensive analysis of 8+ quantum parameters including gate fidelity, coherence time, and crosstalk levels.</p>
-                </div>
+    <section class="features" id="features">
+        <div class="section-header">
+            <h2>Revolutionary Capabilities</h2>
+            <p>Advanced machine learning algorithms designed to enhance quantum computing reliability and performance</p>
+        </div>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon">⚛️</div>
+                <h3>Error Detection</h3>
+                <p>Real-time identification of quantum errors using state-of-the-art machine learning models trained on comprehensive quantum state data.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔮</div>
+                <h3>Predictive Analysis</h3>
+                <p>Anticipate quantum decoherence and gate errors before they occur, enabling proactive error mitigation strategies.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Performance Optimization</h3>
+                <p>Optimize quantum circuit execution with ML-driven insights that maximize fidelity and minimize error rates.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🚀</div>
+                <h3>Scalable Solutions</h3>
+                <p>Built to scale with quantum systems from small NISQ devices to large-scale fault-tolerant quantum computers.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🧠</div>
+                <h3>Deep Learning Models</h3>
+                <p>Leverage neural networks specifically designed for quantum error patterns and correlations across qubit systems.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>Real-Time Processing</h3>
+                <p>Sub-millisecond error prediction enabling fast feedback loops for quantum error correction protocols.</p>
             </div>
         </div>
     </section>
 
-    <!-- Stats Section -->
-    <section class="stats-section">
-        <div class="container">
-            <h2 class="section-title" style="color: white;">Proven Results</h2>
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <div class="stat-number">99.2%</div>
-                    <div class="stat-label">Prediction Accuracy</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">15K+</div>
-                    <div class="stat-label">Quantum Circuits Analyzed</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">$2.1M</div>
-                    <div class="stat-label">Average Cost Savings</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">24/7</div>
-                    <div class="stat-label">Monitoring & Protection</div>
-                </div>
+    <section class="info-section" id="about">
+        <div class="section-header">
+            <h2>Introduction to Quantum Computing</h2>
+            <p>Explore the fundamental concepts that power the quantum revolution</p>
+        </div>
+
+        <div class="info-content">
+            <div class="info-text">
+                <h3>What is Quantum?</h3>
+                <p>Quantum refers to the smallest discrete unit of any physical property, such as energy or matter. The term derives from quantum mechanics, the branch of physics that describes the behavior of particles at the atomic and subatomic level.</p>
+                <p>Unlike classical physics, quantum mechanics reveals that energy, momentum, and other quantities are often restricted to discrete values (quantized), particles behave as both waves and particles, and there are fundamental limits to how accurately certain properties can be measured simultaneously.</p>
+            </div>
+            <div class="info-image">
+                <svg viewBox="0 0 400 400" style="width: 100%; height: 100%;">
+                    <defs>
+                        <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:rgba(255,255,255,0.8);stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:rgba(255,255,255,0.2);stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    <circle cx="200" cy="200" r="150" fill="none" stroke="url(#grad1)" stroke-width="2"/>
+                    <circle cx="200" cy="200" r="100" fill="none" stroke="url(#grad1)" stroke-width="2"/>
+                    <circle cx="200" cy="200" r="50" fill="none" stroke="url(#grad1)" stroke-width="2"/>
+                    <circle cx="200" cy="200" r="8" fill="white"/>
+                    <circle cx="200" cy="100" r="6" fill="rgba(255,255,255,0.8)"/>
+                    <circle cx="280" cy="200" r="6" fill="rgba(255,255,255,0.8)"/>
+                    <circle cx="200" cy="300" r="6" fill="rgba(255,255,255,0.8)"/>
+                    <circle cx="120" cy="200" r="6" fill="rgba(255,255,255,0.8)"/>
+                </svg>
+            </div>
+        </div>
+
+        <div class="info-content">
+            <div class="info-text">
+                <h3>What is a Qubit?</h3>
+                <p>A qubit (quantum bit) is the basic unit of information in quantum computing. While a classical bit can only be in a state of 0 or 1, a qubit can exist in a superposition of both states simultaneously.</p>
+                <p>Qubits can be physically implemented using various quantum systems including trapped ions, superconducting circuits, photons, or electron spins. This quantum property enables quantum computers to process vast amounts of information in parallel.</p>
+            </div>
+            <div class="info-image">
+                <svg viewBox="0 0 400 400" style="width: 100%; height: 100%;">
+                    <line x1="200" y1="300" x2="200" y2="100" stroke="rgba(255,255,255,0.6)" stroke-width="2"/>
+                    <circle cx="200" cy="100" r="40" fill="none" stroke="white" stroke-width="3"/>
+                    <text x="200" y="110" text-anchor="middle" fill="white" font-size="24" font-weight="bold">|0⟩</text>
+                    <circle cx="200" cy="300" r="40" fill="none" stroke="white" stroke-width="3"/>
+                    <text x="200" y="310" text-anchor="middle" fill="white" font-size="24" font-weight="bold">|1⟩</text>
+                    <circle cx="200" cy="200" r="50" fill="rgba(255,255,255,0.3)" stroke="white" stroke-width="2" stroke-dasharray="5,5"/>
+                    <text x="200" y="205" text-anchor="middle" fill="white" font-size="18">superposition</text>
+                    <path d="M 180 180 Q 200 200 220 180" fill="none" stroke="white" stroke-width="2"/>
+                </svg>
+            </div>
+        </div>
+
+        <div class="info-content">
+            <div class="info-text">
+                <h3>What is Quantum Computing?</h3>
+                <p>Quantum computing is a revolutionary computing paradigm that leverages the principles of quantum mechanics to process information in fundamentally different ways than classical computers.</p>
+                <p>By harnessing quantum phenomena such as superposition and entanglement, quantum computers can solve certain complex problems exponentially faster than classical computers. This makes them particularly powerful for applications in cryptography, optimization, drug discovery, and artificial intelligence.</p>
+            </div>
+            <div class="info-image">
+                <svg viewBox="0 0 400 400" style="width: 100%; height: 100%;">
+                    <rect x="100" y="150" width="200" height="100" rx="10" fill="rgba(255,255,255,0.2)" stroke="white" stroke-width="2"/>
+                    <text x="200" y="190" text-anchor="middle" fill="white" font-size="16" font-weight="bold">Quantum Processor</text>
+                    <line x1="150" y1="100" x2="180" y2="150" stroke="white" stroke-width="2"/>
+                    <line x1="200" y1="100" x2="200" y2="150" stroke="white" stroke-width="2"/>
+                    <line x1="250" y1="100" x2="220" y2="150" stroke="white" stroke-width="2"/>
+                    <circle cx="150" cy="100" r="8" fill="white"/>
+                    <circle cx="200" cy="100" r="8" fill="white"/>
+                    <circle cx="250" cy="100" r="8" fill="white"/>
+                    <line x1="180" y1="250" x2="150" y2="300" stroke="white" stroke-width="2"/>
+                    <line x1="200" y1="250" x2="200" y2="300" stroke="white" stroke-width="2"/>
+                    <line x1="220" y1="250" x2="250" y2="300" stroke="white" stroke-width="2"/>
+                    <circle cx="150" cy="300" r="8" fill="white"/>
+                    <circle cx="200" cy="300" r="8" fill="white"/>
+                    <circle cx="250" cy="300" r="8" fill="white"/>
+                </svg>
+            </div>
+        </div>
+
+        <div class="info-content">
+            <div class="info-text">
+                <h3>Superposition</h3>
+                <p>Superposition is the ability of a quantum system to be in multiple states at the same time until it is measured. A qubit in superposition is simultaneously in a combination of the |0⟩ and |1⟩ states.</p>
+                <p>This property allows quantum computers to evaluate multiple solutions simultaneously, providing massive parallelism. When measured, the superposition collapses to one definite state, either 0 or 1, with probabilities determined by the quantum state.</p>
+            </div>
+            <div class="info-image">
+                <svg viewBox="0 0 400 400" style="width: 100%; height: 100%;">
+                    <circle cx="200" cy="200" r="120" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2"/>
+                    <line x1="200" y1="200" x2="200" y2="80" stroke="white" stroke-width="3" stroke-dasharray="10,5"/>
+                    <line x1="200" y1="200" x2="200" y2="320" stroke="white" stroke-width="3" stroke-dasharray="10,5"/>
+                    <line x1="200" y1="200" x2="285" y2="250" stroke="rgba(255,255,255,0.8)" stroke-width="4"/>
+                    <circle cx="200" cy="80" r="15" fill="white"/>
+                    <text x="200" y="60" text-anchor="middle" fill="white" font-size="18">|0⟩</text>
+                    <circle cx="200" cy="320" r="15" fill="white"/>
+                    <text x="200" y="350" text-anchor="middle" fill="white" font-size="18">|1⟩</text>
+                    <circle cx="285" cy="250" r="15" fill="rgba(255,255,0,0.8)"/>
+                    <text x="330" y="255" text-anchor="start" fill="white" font-size="16">superposed</text>
+                </svg>
+            </div>
+        </div>
+
+        <div class="info-content">
+            <div class="info-text">
+                <h3>Entanglement</h3>
+                <p>Quantum entanglement is a phenomenon where two or more qubits become correlated in such a way that the state of one qubit instantaneously affects the state of the other, regardless of the distance between them.</p>
+                <p>Einstein called this "spooky action at a distance." Entanglement is crucial for quantum computing as it allows qubits to share information and coordinate their behavior, enabling complex quantum algorithms and quantum communication protocols.</p>
+            </div>
+            <div class="info-image">
+                <svg viewBox="0 0 400 400" style="width: 100%; height: 100%;">
+                    <circle cx="150" cy="200" r="60" fill="rgba(255,255,255,0.2)" stroke="white" stroke-width="2"/>
+                    <circle cx="250" cy="200" r="60" fill="rgba(255,255,255,0.2)" stroke="white" stroke-width="2"/>
+                    <circle cx="150" cy="200" r="20" fill="white"/>
+                    <circle cx="250" cy="200" r="20" fill="white"/>
+                    <path d="M 170 200 Q 200 180 230 200" fill="none" stroke="rgba(255,255,0,0.8)" stroke-width="3"/>
+                    <path d="M 170 200 Q 200 220 230 200" fill="none" stroke="rgba(255,255,0,0.8)" stroke-width="3"/>
+                    <text x="150" y="285" text-anchor="middle" fill="white" font-size="16">Qubit 1</text>
+                    <text x="250" y="285" text-anchor="middle" fill="white" font-size="16">Qubit 2</text>
+                    <text x="200" y="160" text-anchor="middle" fill="rgba(255,255,0,0.9)" font-size="14">Entangled</text>
+                </svg>
+            </div>
+        </div>
+
+        <div class="info-content">
+            <div class="info-text">
+                <h3>Quantum Interference</h3>
+                <p>Quantum interference is the phenomenon where quantum states can add together (constructive interference) or cancel each other out (destructive interference), similar to waves in water.</p>
+                <p>Quantum algorithms cleverly use interference to amplify the probability of correct answers while suppressing incorrect ones. This is fundamental to how quantum computers arrive at solutions more efficiently than classical computers for certain problems.</p>
+            </div>
+            <div class="info-image">
+                <svg viewBox="0 0 400 400" style="width: 100%; height: 100%;">
+                    <path d="M 50 200 Q 100 150 150 200 T 250 200 T 350 200" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2"/>
+                    <path d="M 50 200 Q 100 250 150 200 T 250 200 T 350 200" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2"/>
+                    <path d="M 50 200 Q 100 120 150 200 T 250 200 T 350 200" fill="none" stroke="white" stroke-width="3" stroke-dasharray="5,5"/>
+                    <text x="200" y="120" text-anchor="middle" fill="white" font-size="14">Constructive</text>
+                    <text x="200" y="140" text-anchor="middle" fill="white" font-size="14">Interference</text>
+                    <ellipse cx="200" cy="200" rx="30" ry="80" fill="rgba(255,255,0,0.3)" stroke="rgba(255,255,0,0.6)" stroke-width="2"/>
+                </svg>
+            </div>
+        </div>
+
+        <div class="info-content">
+            <div class="info-text">
+                <h3>How Does Quantum Computing Work?</h3>
+                <p>Quantum computing works by preparing qubits in superposition states, applying quantum gates to manipulate these states through interference and entanglement, and finally measuring the qubits to extract classical information.</p>
+                <p>The quantum algorithm is designed to guide the system's evolution so that incorrect answers destructively interfere and cancel out, while correct answers constructively interfere and amplify. The entire computation happens in a highly isolated environment to prevent decoherence.</p>
+            </div>
+            <div class="info-image">
+                <svg viewBox="0 0 400 400" style="width: 100%; height: 100%;">
+                    <rect x="80" y="100" width="60" height="40" rx="5" fill="rgba(255,255,255,0.3)" stroke="white" stroke-width="2"/>
+                    <text x="110" y="125" text-anchor="middle" fill="white" font-size="12">Initialize</text>
+                    <rect x="170" y="100" width="60" height="40" rx="5" fill="rgba(255,255,255,0.3)" stroke="white" stroke-width="2"/>
+                    <text x="200" y="120" text-anchor="middle" fill="white" font-size="11">Quantum</text>
+                    <text x="200" y="132" text-anchor="middle" fill="white" font-size="11">Gates</text>
+                    <rect x="260" y="100" width="60" height="40" rx="5" fill="rgba(255,255,255,0.3)" stroke="white" stroke-width="2"/>
+                    <text x="290" y="125" text-anchor="middle" fill="white" font-size="12">Measure</text>
+                    <line x1="140" y1="120" x2="170" y2="120" stroke="white" stroke-width="2" marker-end="url(#arrowhead)"/>
+                    <line x1="230" y1="120" x2="260" y2="120" stroke="white" stroke-width="2" marker-end="url(#arrowhead)"/>
+                    <rect x="120" y="200" width="160" height="100" rx="10" fill="rgba(255,255,255,0.2)" stroke="white" stroke-width="2" stroke-dasharray="5,5"/>
+                    <text x="200" y="230" text-anchor="middle" fill="white" font-size="14">Quantum Circuit</text>
+                    <line x1="140" y1="250" x2="260" y2="250" stroke="white" stroke-width="1"/>
+                    <line x1="140" y1="270" x2="260" y2="270" stroke="white" stroke-width="1"/>
+                    <circle cx="180" cy="250" r="8" fill="rgba(255,255,0,0.6)" stroke="white" stroke-width="1"/>
+                    <circle cx="220" cy="270" r="8" fill="rgba(255,255,0,0.6)" stroke="white" stroke-width="1"/>
+                    <defs>
+                        <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                            <polygon points="0 0, 10 3, 0 6" fill="white" />
+                        </marker>
+                    </defs>
+                </svg>
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2024 Quantum Error Prediction System. All rights reserved.</p>
-            <p>Advanced AI for Quantum Computing Safety</p>
+    <section class="applications">
+        <div class="section-header">
+            <h2>Quantum Computing Applications</h2>
+            <p>Transforming industries through quantum advantage</p>
         </div>
+        <div class="app-grid">
+            <div class="app-card">
+                <div class="app-icon">🔐</div>
+                <h3>Cryptography</h3>
+                <p>Developing quantum-resistant encryption methods and breaking traditional cryptographic systems using Shor's algorithm for factoring large numbers.</p>
+            </div>
+            <div class="app-card">
+                <div class="app-icon">💊</div>
+                <h3>Drug Discovery</h3>
+                <p>Simulating molecular interactions and protein folding to accelerate pharmaceutical research and design more effective medications.</p>
+            </div>
+            <div class="app-card">
+                <div class="app-icon">🧬</div>
+                <h3>Materials Science</h3>
+                <p>Discovering new materials with specific properties for batteries, superconductors, and catalysts through quantum simulation.</p>
+            </div>
+            <div class="app-card">
+                <div class="app-icon">📈</div>
+                <h3>Financial Modeling</h3>
+                <p>Optimizing portfolios, risk analysis, and derivatives pricing using quantum algorithms for Monte Carlo simulations.</p>
+            </div>
+            <div class="app-card">
+                <div class="app-icon">🤖</div>
+                <h3>Artificial Intelligence</h3>
+                <p>Enhancing machine learning algorithms with quantum speedup for pattern recognition, optimization, and neural network training.</p>
+            </div>
+            <div class="app-card">
+                <div class="app-icon">🚗</div>
+                <h3>Optimization</h3>
+                <p>Solving complex logistics, supply chain, and traffic flow problems using quantum annealing and variational algorithms.</p>
+            </div>
+            <div class="app-card">
+                <div class="app-icon">🌡️</div>
+                <h3>Climate Modeling</h3>
+                <p>Simulating complex climate systems and chemical reactions to better understand and address climate change.</p>
+            </div>
+            <div class="app-card">
+                <div class="app-icon">⚡</div>
+                <h3>Energy Systems</h3>
+                <p>Optimizing power grid management, renewable energy distribution, and discovering new energy storage solutions.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="error-prediction-section">
+        <div class="section-header">
+            <h2>Our Error Prediction Solution</h2>
+            <p>Bridging the gap between quantum theory and practical quantum computing</p>
+        </div>
+        <div class="info-content">
+            <div class="info-text">
+                <h3>Understanding Quantum Errors</h3>
+                <p>Quantum computers are extremely sensitive to environmental noise, leading to errors in quantum states. These errors include bit-flip errors, phase-flip errors, and decoherence, which can dramatically affect computation accuracy.</p>
+                <p>Our platform employs advanced machine learning techniques to model these error patterns and predict their occurrence with unprecedented accuracy.</p>
+            </div>
+            <div class="info-image">
+                <svg viewBox="0 0 400 400" style="width: 100%; height: 100%;">
+                    <circle cx="200" cy="200" r="80" fill="rgba(255,100,100,0.3)" stroke="rgba(255,100,100,0.8)" stroke-width="3"/>
+                    <text x="200" y="205" text-anchor="middle" fill="white" font-size="16">Error Zone</text>
+                    <line x1="120" y1="120" x2="280" y2="280" stroke="rgba(255,100,100,0.6)" stroke-width="2"/>
+                    <line x1="280" y1="120" x2="120" y2="280" stroke="rgba(255,100,100,0.6)" stroke-width="2"/>
+                    <circle cx="200" cy="100" r="15" fill="rgba(255,255,255,0.8)"/>
+                    <circle cx="300" cy="200" r="15" fill="rgba(255,255,255,0.8)"/>
+                    <circle cx="200" cy="300" r="15" fill="rgba(255,255,255,0.8)"/>
+                    <circle cx="100" cy="200" r="15" fill="rgba(255,255,255,0.8)"/>
+                    <path d="M 200 100 L 300 200 L 200 300 L 100 200 Z" fill="none" stroke="white" stroke-width="2" stroke-dasharray="5,5"/>
+                </svg>
+            </div>
+        </div>
+
+        <div class="info-content">
+            <div class="info-text">
+                <h3>Machine Learning Approach</h3>
+                <p>We utilize ensemble methods, recurrent neural networks, and transformer architectures to capture temporal dependencies in quantum error evolution.</p>
+                <p>Our models are trained on extensive datasets from real quantum processors, ensuring robust performance across different quantum hardware platforms.</p>
+            </div>
+            <div class="info-image">
+                <svg viewBox="0 0 400 400" style="width: 100%; height: 100%;">
+                    <rect x="50" y="180" width="80" height="40" rx="5" fill="rgba(255,255,255,0.2)" stroke="white" stroke-width="2"/>
+                    <text x="90" y="205" text-anchor="middle" fill="white" font-size="12">Input</text>
+                    <rect x="160" y="150" width="80" height="100" rx="5" fill="rgba(255,255,255,0.3)" stroke="white" stroke-width="2"/>
+                    <text x="200" y="195" text-anchor="middle" fill="white" font-size="11">Neural</text>
+                    <text x="200" y="210" text-anchor="middle" fill="white" font-size="11">Network</text>
+                    <rect x="270" y="180" width="80" height="40" rx="5" fill="rgba(255,255,255,0.2)" stroke="white" stroke-width="2"/>
+                    <text x="310" y="205" text-anchor="middle" fill="white" font-size="12">Prediction</text>
+                    <line x1="130" y1="200" x2="160" y2="200" stroke="white" stroke-width="2"/>
+                    <line x1="240" y1="200" x2="270" y2="200" stroke="white" stroke-width="2"/>
+                    <circle cx="180" cy="175" r="5" fill="rgba(255,255,0,0.8)"/>
+                    <circle cx="200" cy="175" r="5" fill="rgba(255,255,0,0.8)"/>
+                    <circle cx="220" cy="175" r="5" fill="rgba(255,255,0,0.8)"/>
+                    <circle cx="180" cy="200" r="5" fill="rgba(255,255,0,0.8)"/>
+                    <circle cx="200" cy="200" r="5" fill="rgba(255,255,0,0.8)"/>
+                    <circle cx="220" cy="200" r="5" fill="rgba(255,255,0,0.8)"/>
+                    <circle cx="180" cy="225" r="5" fill="rgba(255,255,0,0.8)"/>
+                    <circle cx="200" cy="225" r="5" fill="rgba(255,255,0,0.8)"/>
+                    <circle cx="220" cy="225" r="5" fill="rgba(255,255,0,0.8)"/>
+                </svg>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <h4>99.7%</h4>
+                <p>Prediction Accuracy</p>
+            </div>
+            <div class="stat-item">
+                <h4>&lt; 1ms</h4>
+                <p>Prediction Latency</p>
+            </div>
+            <div class="stat-item">
+                <h4>50+</h4>
+                <p>Qubit Systems Supported</p>
+            </div>
+            <div class="stat-item">
+                <h4>10M+</h4>
+                <p>Training Samples</p>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contact">
+        <p>&copy; 2024 QuantumPredict. Advancing Quantum Computing Reliability Through Machine Learning.</p>
     </footer>
 
     <script>
-        // Add scroll animations
-        document.addEventListener('DOMContentLoaded', function() {
-            const observerOptions = {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            };
+        // Navbar scroll effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
 
-            const observer = new IntersectionObserver(function(entries) {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0)';
-                    }
-                });
-            }, observerOptions);
-
-            // Observe feature cards
-            document.querySelectorAll('.feature-card').forEach(card => {
-                card.style.opacity = '0';
-                card.style.transform = 'translateY(30px)';
-                card.style.transition = 'all 0.6s ease';
-                observer.observe(card);
-            });
-
-            // Observe stats
-            document.querySelectorAll('.stat-item').forEach(stat => {
-                stat.style.opacity = '0';
-                stat.style.transform = 'translateY(30px)';
-                stat.style.transition = 'all 0.6s ease';
-                observer.observe(stat);
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
             });
         });
+
+        // Intersection Observer for fade-in animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe feature cards
+        document.querySelectorAll('.feature-card').forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = `all 0.6s ease ${index * 0.1}s`;
+            observer.observe(card);
+        });
+
+        // Observe info sections
+        document.querySelectorAll('.info-content').forEach((content) => {
+            content.style.opacity = '0';
+            content.style.transform = 'translateY(30px)';
+            content.style.transition = 'all 0.8s ease';
+            observer.observe(content);
+        });
+
+        // Animate stats on scroll
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const statItems = entry.target.querySelectorAll('.stat-item h4');
+                    statItems.forEach((item, index) => {
+                        setTimeout(() => {
+                            item.style.animation = 'fadeInUp 0.8s ease forwards';
+                        }, index * 100);
+                    });
+                    statsObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.3 });
+
+        const statsSection = document.querySelector('.stats-grid');
+        if (statsSection) {
+            statsObserver.observe(statsSection);
+        }
     </script>
 </body>
 </html>

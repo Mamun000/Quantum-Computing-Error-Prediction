@@ -134,7 +134,6 @@ dmypy.json
 Thumbs.db
 
 # Project specific
-artifacts/*.csv
-artifacts/*.pkl
+
 logs/*.log
 notebook/data/*.csv
